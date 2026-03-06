@@ -15,6 +15,8 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 
+/* Usar o Gemini como IA */
+
 const SUGGESTED_MESSAGES = ["Monte meu plano de treino"]
 
 const chatFormSchema = z.object({
