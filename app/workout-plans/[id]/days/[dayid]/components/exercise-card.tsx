@@ -3,7 +3,7 @@
 import { CircleHelp, Zap } from "lucide-react"
 import { useQueryStates, parseAsBoolean, parseAsString } from "nuqs"
 import { Button } from "@/components/ui/button"
-import type { GetWorkoutDay200ExercisesItem } from "@/app/_lib/api/fetch-generated"
+import { GetWorkoutDay200ExercisesItem } from "@/app/_lib/api/fetch-generated"
 
 interface ExerciseCardProps {
 	exercise: GetWorkoutDay200ExercisesItem

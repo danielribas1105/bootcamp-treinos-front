@@ -1,11 +1,6 @@
 import { redirect } from "next/navigation"
 import { authClient } from "@/app/_lib/auth-client"
 import { headers } from "next/headers"
-import {
-	getWorkoutDay,
-	getHomePageData,
-	getUserTrainData,
-} from "@/app/_lib/api/fetch-generated"
 import dayjs from "dayjs"
 import Image from "next/image"
 import { Calendar, Timer, Dumbbell } from "lucide-react"
@@ -15,6 +10,11 @@ import { BackButton } from "./components/back-button"
 import { ExerciseCard } from "./components/exercise-card"
 import { StartWorkoutButton } from "./components/start-workout-button"
 import { CompleteWorkoutButton } from "./components/complete-workout-button"
+import {
+	getHomeData,
+	getUserTrainData,
+	getWorkoutDay,
+} from "@/app/_lib/api/fetch-generated"
 
 const WEEKDAY_LABELS: Record<string, string> = {
 	MONDAY: "SEGUNDA",
@@ -52,7 +52,7 @@ export default async function WorkoutDayPage({
 	const { id: workoutPlanId, dayId } = await params
 	const [workoutDayData, homeData, trainData] = await Promise.all([
 		getWorkoutDay(workoutPlanId, dayId),
-		getHomePageData(dayjs().format("YYYY-MM-DD")),
+		getHomeData(dayjs().format("YYYY-MM-DD")),
 		getUserTrainData(),
 	])
 

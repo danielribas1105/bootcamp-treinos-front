@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation"
 import { authClient } from "@/app/_lib/auth-client"
 import { headers } from "next/headers"
-import { getHomePageData, getUserTrainData } from "./_lib/api/fetch-generated"
 import dayjs from "dayjs"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,6 +8,7 @@ import { Flame } from "lucide-react"
 import { BottomNav } from "./components/bottom-nav"
 import { ConsistencyTracker } from "./components/consistency-tracker"
 import { WorkoutDayCard } from "./components/workout-day-card"
+import { getHomeData, getUserTrainData } from "./_lib/api/fetch-generated"
 
 export default async function Home() {
 	const session = await authClient.getSession({
@@ -21,7 +21,7 @@ export default async function Home() {
 
 	const today = dayjs()
 	const [homeData, trainData] = await Promise.all([
-		getHomePageData(today.format("YYYY-MM-DD")),
+		getHomeData(today.format("YYYY-MM-DD")),
 		getUserTrainData(),
 	])
 

@@ -1,11 +1,6 @@
 import { redirect } from "next/navigation"
 import { authClient } from "@/app/_lib/auth-client"
 import { headers } from "next/headers"
-import {
-	getWorkoutPlan,
-	getHomePageData,
-	getUserTrainData,
-} from "@/app/_lib/api/fetch-generated"
 import dayjs from "dayjs"
 import Image from "next/image"
 import Link from "next/link"
@@ -14,6 +9,11 @@ import { Badge } from "@/components/ui/badge"
 import { BottomNav } from "@/app/components/bottom-nav"
 import { WorkoutDayCard } from "@/app/components/workout-day-card"
 import { RestDayCard } from "./components/rest-day-card"
+import {
+	getHomeData,
+	getUserTrainData,
+	getWorkoutPlan,
+} from "@/app/_lib/api/fetch-generated"
 
 const WEEKDAY_ORDER = [
 	"MONDAY",
@@ -41,7 +41,7 @@ export default async function WorkoutPlanPage({
 	const { id } = await params
 	const [workoutPlanData, homeData, trainData] = await Promise.all([
 		getWorkoutPlan(id),
-		getHomePageData(dayjs().format("YYYY-MM-DD")),
+		getHomeData(dayjs().format("YYYY-MM-DD")),
 		getUserTrainData(),
 	])
 

@@ -1,10 +1,9 @@
 "use server"
-
-import { revalidatePath } from "next/cache"
 import {
 	startWorkoutSession,
 	updateWorkoutSession,
 } from "@/app/_lib/api/fetch-generated"
+import { revalidatePath } from "next/cache"
 
 export async function startWorkoutAction(
 	workoutPlanId: string,
