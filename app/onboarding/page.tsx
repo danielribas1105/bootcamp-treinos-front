@@ -29,9 +29,6 @@ export default async function OnboardingPage() {
 	}
 
 	return (
-		<>
-			<div>Inserir char button</div>
-			{/* <Chat embedded initialMessage="Quero começar a melhorar minha saúde!" /> */}
-		</>
+		<Chat embedded initialMessage="Quero começar a melhorar minha saúde!" />
 	)
 }
