@@ -1,0 +1,1451 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Bootcamp Treinos API",
+		"description": "API para bootcamp de treinos do FSC",
+		"version": "0.0.1"
+	},
+	"components": { "schemas": {} },
+	"paths": {
+		"/home/{date}": {
+			"get": {
+				"operationId": "get-home-page-data",
+				"summary": "Get home page data",
+				"tags": ["Home"],
+				"parameters": [
+					{
+						"schema": {
+							"type": "string",
+							"format": "date",
+							"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+						},
+						"in": "path",
+						"name": "date",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"activeWorkoutPlanId": {
+											"type": "string",
+											"format": "uuid",
+											"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+										},
+										"todayWorkoutDay": {
+											"type": "object",
+											"properties": {
+												"workoutPlanId": {
+													"type": "string",
+													"format": "uuid",
+													"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+												},
+												"id": {
+													"type": "string",
+													"format": "uuid",
+													"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+												},
+												"name": { "type": "string" },
+												"isRest": { "type": "boolean" },
+												"weekDay": {
+													"type": "string",
+													"enum": [
+														"SUNDAY",
+														"MONDAY",
+														"TUESDAY",
+														"WEDNESDAY",
+														"THURSDAY",
+														"FRIDAY",
+														"SATURDAY"
+													]
+												},
+												"estimatedDurationInSeconds": { "type": "number" },
+												"coverImageUrl": { "type": "string", "format": "uri" },
+												"exercisesCount": { "type": "number" }
+											},
+											"required": [
+												"workoutPlanId",
+												"id",
+												"name",
+												"isRest",
+												"weekDay",
+												"estimatedDurationInSeconds",
+												"exercisesCount"
+											],
+											"additionalProperties": false
+										},
+										"workoutStreak": { "type": "number" },
+										"consistencyByDay": {
+											"type": "object",
+											"additionalProperties": {
+												"type": "object",
+												"properties": {
+													"workoutDayCompleted": { "type": "boolean" },
+													"workoutDayStarted": { "type": "boolean" }
+												},
+												"required": [
+													"workoutDayCompleted",
+													"workoutDayStarted"
+												],
+												"additionalProperties": false
+											}
+										}
+									},
+									"required": [
+										"activeWorkoutPlanId",
+										"todayWorkoutDay",
+										"workoutStreak",
+										"consistencyByDay"
+									],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/me/": {
+			"get": {
+				"operationId": "get-user-train-data",
+				"summary": "Get user train data",
+				"tags": ["Me"],
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"nullable": true,
+									"type": "object",
+									"properties": {
+										"userId": { "type": "string" },
+										"userName": { "type": "string" },
+										"weightInGrams": { "type": "number" },
+										"heightInCentimeters": { "type": "number" },
+										"age": { "type": "number" },
+										"bodyFatPercentage": {
+											"type": "number",
+											"minimum": 0,
+											"maximum": 100
+										}
+									},
+									"required": [
+										"userId",
+										"userName",
+										"weightInGrams",
+										"heightInCentimeters",
+										"age",
+										"bodyFatPercentage"
+									],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"operationId": "upsert-user-train-data",
+				"summary": "Upsert user train data",
+				"tags": ["Me"],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"weightInGrams": { "type": "number", "minimum": 0 },
+									"heightInCentimeters": { "type": "number", "minimum": 0 },
+									"age": { "type": "number", "minimum": 0 },
+									"bodyFatPercentage": {
+										"type": "number",
+										"minimum": 0,
+										"maximum": 100
+									}
+								},
+								"required": [
+									"weightInGrams",
+									"heightInCentimeters",
+									"age",
+									"bodyFatPercentage"
+								]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"userId": { "type": "string" },
+										"weightInGrams": { "type": "number" },
+										"heightInCentimeters": { "type": "number" },
+										"age": { "type": "number" },
+										"bodyFatPercentage": { "type": "number" }
+									},
+									"required": [
+										"userId",
+										"weightInGrams",
+										"heightInCentimeters",
+										"age",
+										"bodyFatPercentage"
+									],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/stats/": {
+			"get": {
+				"operationId": "get-user-workout-stats",
+				"summary": "Get user workout stats",
+				"tags": ["Stats"],
+				"parameters": [
+					{
+						"schema": {
+							"type": "string",
+							"format": "date",
+							"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+						},
+						"in": "query",
+						"name": "from",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "string",
+							"format": "date",
+							"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+						},
+						"in": "query",
+						"name": "to",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"workoutStreak": { "type": "number" },
+										"consistencyByDay": {
+											"type": "object",
+											"additionalProperties": {
+												"type": "object",
+												"properties": {
+													"workoutDayCompleted": { "type": "boolean" },
+													"workoutDayStarted": { "type": "boolean" }
+												},
+												"required": [
+													"workoutDayCompleted",
+													"workoutDayStarted"
+												],
+												"additionalProperties": false
+											}
+										},
+										"completedWorkoutsCount": { "type": "number" },
+										"conclusionRate": { "type": "number" },
+										"totalTimeInSeconds": { "type": "number" }
+									},
+									"required": [
+										"workoutStreak",
+										"consistencyByDay",
+										"completedWorkoutsCount",
+										"conclusionRate",
+										"totalTimeInSeconds"
+									],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/workout-plans/": {
+			"get": {
+				"operationId": "list-workout-plans",
+				"summary": "List workout plans",
+				"tags": ["Workout Plan"],
+				"parameters": [
+					{
+						"schema": { "type": "string", "enum": ["true", "false"] },
+						"in": "query",
+						"name": "active",
+						"required": false
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string",
+												"format": "uuid",
+												"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+											},
+											"name": { "type": "string" },
+											"isActive": { "type": "boolean" },
+											"workoutDays": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "string",
+															"format": "uuid",
+															"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+														},
+														"name": { "type": "string" },
+														"weekDay": {
+															"type": "string",
+															"enum": [
+																"SUNDAY",
+																"MONDAY",
+																"TUESDAY",
+																"WEDNESDAY",
+																"THURSDAY",
+																"FRIDAY",
+																"SATURDAY"
+															]
+														},
+														"isRest": { "type": "boolean" },
+														"estimatedDurationInSeconds": { "type": "number" },
+														"coverImageUrl": {
+															"type": "string",
+															"format": "uri"
+														},
+														"exercises": {
+															"type": "array",
+															"items": {
+																"type": "object",
+																"properties": {
+																	"id": {
+																		"type": "string",
+																		"format": "uuid",
+																		"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+																	},
+																	"order": { "type": "number" },
+																	"name": { "type": "string" },
+																	"sets": { "type": "number" },
+																	"reps": { "type": "number" },
+																	"restTimeInSeconds": { "type": "number" }
+																},
+																"required": [
+																	"id",
+																	"order",
+																	"name",
+																	"sets",
+																	"reps",
+																	"restTimeInSeconds"
+																],
+																"additionalProperties": false
+															}
+														}
+													},
+													"required": [
+														"id",
+														"name",
+														"weekDay",
+														"isRest",
+														"estimatedDurationInSeconds",
+														"exercises"
+													],
+													"additionalProperties": false
+												}
+											}
+										},
+										"required": ["id", "name", "isActive", "workoutDays"],
+										"additionalProperties": false
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"operationId": "create-workout-plan",
+				"summary": "Create a workout plan",
+				"tags": ["Workout Plan"],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": { "type": "string", "minLength": 1 },
+									"userId": { "type": "string" },
+									"isActive": { "type": "boolean" },
+									"createdAt": {},
+									"workoutDays": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": { "type": "string" },
+												"name": { "type": "string", "minLength": 1 },
+												"weekDay": {
+													"type": "string",
+													"enum": [
+														"SUNDAY",
+														"MONDAY",
+														"TUESDAY",
+														"WEDNESDAY",
+														"THURSDAY",
+														"FRIDAY",
+														"SATURDAY"
+													]
+												},
+												"isRest": { "default": false, "type": "boolean" },
+												"estimatedDurationInSeconds": {
+													"type": "number",
+													"minimum": 1
+												},
+												"coverImageUrl": { "type": "string", "format": "uri" },
+												"exercises": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"id": { "type": "string" },
+															"order": { "type": "number", "minimum": 0 },
+															"name": { "type": "string", "minLength": 1 },
+															"sets": { "type": "number", "minimum": 1 },
+															"reps": { "type": "number", "minimum": 1 },
+															"restTimeInSeconds": {
+																"type": "number",
+																"minimum": 1
+															}
+														},
+														"required": [
+															"id",
+															"order",
+															"name",
+															"sets",
+															"reps",
+															"restTimeInSeconds"
+														]
+													}
+												}
+											},
+											"required": [
+												"id",
+												"name",
+												"weekDay",
+												"estimatedDurationInSeconds",
+												"exercises"
+											]
+										}
+									}
+								},
+								"required": [
+									"name",
+									"userId",
+									"isActive",
+									"createdAt",
+									"workoutDays"
+								]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"name": { "type": "string", "minLength": 1 },
+										"workoutDays": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"name": { "type": "string", "minLength": 1 },
+													"weekDay": {
+														"type": "string",
+														"enum": [
+															"SUNDAY",
+															"MONDAY",
+															"TUESDAY",
+															"WEDNESDAY",
+															"THURSDAY",
+															"FRIDAY",
+															"SATURDAY"
+														]
+													},
+													"isRest": { "default": false, "type": "boolean" },
+													"estimatedDurationInSeconds": {
+														"type": "number",
+														"minimum": 1
+													},
+													"coverImageUrl": {
+														"type": "string",
+														"format": "uri"
+													},
+													"exercises": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"order": { "type": "number", "minimum": 0 },
+																"name": { "type": "string", "minLength": 1 },
+																"sets": { "type": "number", "minimum": 1 },
+																"reps": { "type": "number", "minimum": 1 },
+																"restTimeInSeconds": {
+																	"type": "number",
+																	"minimum": 1
+																}
+															},
+															"required": [
+																"order",
+																"name",
+																"sets",
+																"reps",
+																"restTimeInSeconds"
+															],
+															"additionalProperties": false
+														}
+													}
+												},
+												"required": [
+													"name",
+													"weekDay",
+													"isRest",
+													"estimatedDurationInSeconds",
+													"exercises"
+												],
+												"additionalProperties": false
+											}
+										}
+									},
+									"required": ["name", "workoutDays"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/workout-plans/{workoutPlanId}": {
+			"get": {
+				"operationId": "get-workout-plan",
+				"summary": "Get a workout plan",
+				"tags": ["Workout Plan"],
+				"parameters": [
+					{
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+						},
+						"in": "path",
+						"name": "workoutPlanId",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid",
+											"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+										},
+										"name": { "type": "string" },
+										"workoutDays": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"format": "uuid",
+														"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+													},
+													"weekDay": {
+														"type": "string",
+														"enum": [
+															"SUNDAY",
+															"MONDAY",
+															"TUESDAY",
+															"WEDNESDAY",
+															"THURSDAY",
+															"FRIDAY",
+															"SATURDAY"
+														]
+													},
+													"name": { "type": "string" },
+													"isRest": { "type": "boolean" },
+													"coverImageUrl": {
+														"type": "string",
+														"format": "uri"
+													},
+													"estimatedDurationInSeconds": { "type": "number" },
+													"exercisesCount": { "type": "number" }
+												},
+												"required": [
+													"id",
+													"weekDay",
+													"name",
+													"isRest",
+													"estimatedDurationInSeconds",
+													"exercisesCount"
+												],
+												"additionalProperties": false
+											}
+										}
+									},
+									"required": ["id", "name", "workoutDays"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/workout-plans/{workoutPlanId}/days/{workoutDayId}": {
+			"get": {
+				"operationId": "get-workout-day",
+				"summary": "Get a workout day",
+				"tags": ["Workout Plan"],
+				"parameters": [
+					{
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+						},
+						"in": "path",
+						"name": "workoutPlanId",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+						},
+						"in": "path",
+						"name": "workoutDayId",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid",
+											"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+										},
+										"name": { "type": "string" },
+										"isRest": { "type": "boolean" },
+										"coverImageUrl": { "type": "string", "format": "uri" },
+										"estimatedDurationInSeconds": { "type": "number" },
+										"weekDay": {
+											"type": "string",
+											"enum": [
+												"SUNDAY",
+												"MONDAY",
+												"TUESDAY",
+												"WEDNESDAY",
+												"THURSDAY",
+												"FRIDAY",
+												"SATURDAY"
+											]
+										},
+										"exercises": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"format": "uuid",
+														"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+													},
+													"name": { "type": "string" },
+													"order": { "type": "number" },
+													"workoutDayId": {
+														"type": "string",
+														"format": "uuid",
+														"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+													},
+													"sets": { "type": "number" },
+													"reps": { "type": "number" },
+													"restTimeInSeconds": { "type": "number" }
+												},
+												"required": [
+													"id",
+													"name",
+													"order",
+													"workoutDayId",
+													"sets",
+													"reps",
+													"restTimeInSeconds"
+												],
+												"additionalProperties": false
+											}
+										},
+										"sessions": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"format": "uuid",
+														"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+													},
+													"workoutDayId": {
+														"type": "string",
+														"format": "uuid",
+														"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+													},
+													"startedAt": {
+														"type": "string",
+														"format": "date",
+														"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+													},
+													"completedAt": {
+														"type": "string",
+														"format": "date",
+														"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+													}
+												},
+												"required": ["id", "workoutDayId"],
+												"additionalProperties": false
+											}
+										}
+									},
+									"required": [
+										"id",
+										"name",
+										"isRest",
+										"estimatedDurationInSeconds",
+										"weekDay",
+										"exercises",
+										"sessions"
+									],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/workout-plans/{workoutPlanId}/days/{workoutDayId}/sessions": {
+			"post": {
+				"operationId": "start-workout-session",
+				"summary": "Start a workout session",
+				"tags": ["Workout Plan"],
+				"parameters": [
+					{
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+						},
+						"in": "path",
+						"name": "workoutPlanId",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+						},
+						"in": "path",
+						"name": "workoutDayId",
+						"required": true
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"userWorkoutSessionId": {
+											"type": "string",
+											"format": "uuid",
+											"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+										}
+									},
+									"required": ["userWorkoutSessionId"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/workout-plans/{workoutPlanId}/days/{workoutDayId}/sessions/{sessionId}": {
+			"patch": {
+				"operationId": "update-workout-session",
+				"summary": "Update a workout session",
+				"tags": ["Workout Plan"],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"completedAt": {
+										"type": "string",
+										"format": "date-time",
+										"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+									}
+								},
+								"required": ["completedAt"]
+							}
+						}
+					}
+				},
+				"parameters": [
+					{
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+						},
+						"in": "path",
+						"name": "workoutPlanId",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+						},
+						"in": "path",
+						"name": "workoutDayId",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+						},
+						"in": "path",
+						"name": "sessionId",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid",
+											"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+										},
+										"startedAt": {
+											"type": "string",
+											"format": "date-time",
+											"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+										},
+										"completedAt": {
+											"type": "string",
+											"format": "date-time",
+											"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+										}
+									},
+									"required": ["id", "startedAt", "completedAt"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": { "type": "string" },
+										"code": { "type": "string" }
+									},
+									"required": ["error", "code"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/ai/": {
+			"post": {
+				"operationId": "chat-ai-personal-trainer",
+				"summary": "Chat with AI personal trainer",
+				"tags": ["AI"],
+				"responses": { "200": { "description": "Default Response" } }
+			}
+		},
+		"/": {
+			"get": {
+				"tags": ["Hello World"],
+				"description": "Hello World",
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": { "message": { "type": "string" } },
+									"required": ["message"],
+									"additionalProperties": false
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/{*}": {
+			"get": {
+				"parameters": [
+					{
+						"schema": { "type": "string" },
+						"in": "path",
+						"name": "*",
+						"required": true
+					}
+				],
+				"responses": { "200": { "description": "Default Response" } }
+			},
+			"post": {
+				"parameters": [
+					{
+						"schema": { "type": "string" },
+						"in": "path",
+						"name": "*",
+						"required": true
+					}
+				],
+				"responses": { "200": { "description": "Default Response" } }
+			}
+		}
+	},
+	"servers": [{ "description": "Localhost", "url": "http://localhost:3001" }]
+}
