@@ -39,7 +39,7 @@ const WEEKDAY_TITLE_LABELS: Record<string, string> = {
 export default async function WorkoutDayPage({
 	params,
 }: {
-	params: Promise<{ id: string; dayId: string }>
+	params: Promise<{ id: string; dayid: string }>
 }) {
 	const session = await authClient.getSession({
 		fetchOptions: {
@@ -49,12 +49,19 @@ export default async function WorkoutDayPage({
 
 	if (!session.data?.user) redirect("/auth")
 
-	const { id: workoutPlanId, dayId } = await params
+	const { id: workoutPlanId, dayid } = await params
+
+	console.log("workoutPlanId:", workoutPlanId)
+	console.log("dayId:", dayid)
+
 	const [workoutDayData, homeData, trainData] = await Promise.all([
-		getWorkoutDay(workoutPlanId, dayId),
+		getWorkoutDay(workoutPlanId, dayid),
 		getHomeData(dayjs().format("YYYY-MM-DD")),
 		getUserTrainData(),
 	])
+
+	console.log("workoutDayData.status:", workoutDayData.status)
+	console.log("workoutDayData.data:", workoutDayData.data)
 
 	const needsOnboarding =
 		(homeData.status === 200 && !homeData.data.activeWorkoutPlanId) ||
@@ -136,7 +143,7 @@ export default async function WorkoutDayPage({
 						{!hasInProgressSession && !hasCompletedSession && (
 							<StartWorkoutButton
 								workoutPlanId={workoutPlanId}
-								workoutDayId={dayId}
+								workoutDayId={dayid}
 							/>
 						)}
 						{hasCompletedSession && (
@@ -164,7 +171,7 @@ export default async function WorkoutDayPage({
 				<div className="px-5 pt-5">
 					<CompleteWorkoutButton
 						workoutPlanId={workoutPlanId}
-						workoutDayId={dayId}
+						workoutDayId={dayid}
 						sessionId={inProgressSession.id}
 					/>
 				</div>

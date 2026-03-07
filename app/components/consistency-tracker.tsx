@@ -1,5 +1,5 @@
 import dayjs from "dayjs"
-import type { GetHomePageData200ConsistencyByDay } from "@/app/_lib/api/fetch-generated"
+import type { GetHomeData200ConsistencyByDay } from "@/app/_lib/api/fetch-generated"
 import { ConsistencySquare } from "./consistency-square"
 
 const WEEKDAY_SHORT = ["S", "T", "Q", "Q", "S", "S", "D"]
@@ -14,7 +14,7 @@ function getWeekDates(today: dayjs.Dayjs) {
 }
 
 interface ConsistencyTrackerProps {
-	consistencyByDay: GetHomePageData200ConsistencyByDay
+	consistencyByDay: GetHomeData200ConsistencyByDay
 	today: dayjs.Dayjs
 }
 

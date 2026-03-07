@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { House, Calendar, ChartNoAxesColumn, UserRound } from "lucide-react"
 import dayjs from "dayjs"
-import { getHomePageData } from "@/app/_lib/api/fetch-generated"
+import { getHomeData } from "@/app/_lib/api/fetch-generated"
 import { cn } from "@/lib/utils"
 import { ChatOpenButton } from "@/app/components/chat-open-button"
 
@@ -11,7 +11,7 @@ interface BottomNavProps {
 
 export async function BottomNav({ activePage = "home" }: BottomNavProps) {
 	const today = dayjs()
-	const homeData = await getHomePageData(today.format("YYYY-MM-DD"))
+	const homeData = await getHomeData(today.format("YYYY-MM-DD"))
 
 	const calendarHref =
 		homeData.status === 200 && homeData.data.activeWorkoutPlanId
